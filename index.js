@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT || 4000;
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 app.use(express.json());
 app.use(
@@ -34,10 +34,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // database
-    const db = client.db("gadegt");
-
-    // collections
-    const productsCollection = db.collection("products");
+    const db = client.db("gadget");
 
     // home route
     app.get("/", (req, res) => {
@@ -47,6 +44,22 @@ async function run() {
     // get product for home page
     app.get("/api/products", async (req, res) => {
       const result = await db.collection("products").find().limit(16).toArray();
+      res.send(result);
+    });
+
+    // get a single product for dynamic product page
+    app.get("/api/product", async (req, res) => {
+      const { id } = req.query;
+
+      const result = await db
+        .collection("products")
+        .findOne({ _id: new ObjectId(id) });
+      res.send(result);
+    });
+
+    // get all blogs
+    app.get("/api/blogs", async (req, res) => {
+      const result = await db.collection("blogs").find().toArray();
       res.send(result);
     });
 
