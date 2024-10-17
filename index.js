@@ -73,6 +73,7 @@ async function run() {
         stock,
         price: { minPrice, maxPrice },
         brand,
+        collectionType,
       } = req.query;
       let min = Number(minPrice);
       let max = Number(maxPrice);
@@ -80,6 +81,7 @@ async function run() {
       let stockQuery = {};
       let priceQuery = {};
       let brandQuery = {};
+      let collectionTypeQuery = {};
 
       if (stock !== undefined) {
         if (stock === "true") {
@@ -106,9 +108,18 @@ async function run() {
         brandQuery = { brand };
       }
 
-      console.log(brand);
+      // handle collection type
+      if (collectionType) {
+        collectionTypeQuery = { collectionType };
+      }
 
-      const query = { category, ...stockQuery, ...priceQuery, ...brandQuery };
+      const query = {
+        category,
+        ...stockQuery,
+        ...priceQuery,
+        ...brandQuery,
+        ...collectionTypeQuery,
+      };
 
       try {
         const result = await db.collection("products").find(query).toArray();
