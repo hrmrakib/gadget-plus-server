@@ -68,11 +68,21 @@ async function run() {
 
     // get product based on the category
     app.get("/api/category", async (req, res) => {
-      const { category } = req.query;
-      const result = await db
-        .collection("products")
-        .find({ category })
-        .toArray();
+      const { category, stock } = req.query;
+      let stockQuery = {};
+
+      if (stock !== undefined) {
+        if (stock === "true") {
+          stockQuery = { stock: { $gt: 0 } };
+        }
+        if (stock === "false") {
+          stockQuery = { stock: 0 };
+        }
+      }
+
+      console.log(stockQuery);
+      const query = { category, ...stockQuery };
+      const result = await db.collection("products").find(query).toArray();
       res.send(result);
     });
 
