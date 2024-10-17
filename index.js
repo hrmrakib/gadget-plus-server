@@ -68,8 +68,18 @@ async function run() {
 
     // get product based on the category
     app.get("/api/category", async (req, res) => {
-      const { category, stock } = req.query;
+      const {
+        category,
+        stock,
+        price: { minPrice, maxPrice },
+        brand,
+      } = req.query;
+      let min = Number(minPrice);
+      let max = Number(maxPrice);
+
       let stockQuery = {};
+      let priceQuery = {};
+      let brandQuery = {};
 
       if (stock !== undefined) {
         if (stock === "true") {
@@ -80,10 +90,32 @@ async function run() {
         }
       }
 
-      console.log(stockQuery);
-      const query = { category, ...stockQuery };
-      const result = await db.collection("products").find(query).toArray();
-      res.send(result);
+      // Handle price query
+      if (min && max) {
+        priceQuery = {
+          price: { $gte: Number(min), $lte: Number(max) },
+        };
+      } else if (min) {
+        priceQuery = { price: { $gte: Number(min) } };
+      } else if (max) {
+        priceQuery = { price: { $lte: Number(max) } };
+      }
+
+      // handle brand query
+      if (brand) {
+        brandQuery = { brand };
+      }
+
+      console.log(brand);
+
+      const query = { category, ...stockQuery, ...priceQuery, ...brandQuery };
+
+      try {
+        const result = await db.collection("products").find(query).toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: "Error fetching products" });
+      }
     });
 
     // get product based on the category
