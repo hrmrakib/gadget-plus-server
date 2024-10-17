@@ -50,10 +50,41 @@ async function run() {
     // get a single product for dynamic product page
     app.get("/api/product", async (req, res) => {
       const { id } = req.query;
-
       const result = await db
         .collection("products")
         .findOne({ _id: new ObjectId(id) });
+      res.send(result);
+    });
+
+    // get product based on the collectionType
+    app.get("/api/collectionType", async (req, res) => {
+      const { type } = req.query;
+      const result = await db
+        .collection("products")
+        .find({ collectionType: type })
+        .toArray();
+      res.send(result);
+    });
+
+    // get product based on the category
+    app.get("/api/category", async (req, res) => {
+      const { category } = req.query;
+      const result = await db
+        .collection("products")
+        .find({ category })
+        .toArray();
+      res.send(result);
+    });
+
+    // get product based on the category
+    app.get("/api/allCollection", async (req, res) => {
+      const { productLimit } = req.query;
+      const limited = Number(productLimit);
+      const result = await db
+        .collection("products")
+        .find()
+        .limit(limited)
+        .toArray();
       res.send(result);
     });
 
