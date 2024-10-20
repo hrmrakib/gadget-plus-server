@@ -5,7 +5,7 @@ import {
   getProductsByCollectionType,
   getProductsByCategory,
   getAllCollections,
-  //   getAllBlogs,
+  getProductByTitle,
 } from "../controllers/productController.js";
 
 const router = express.Router();
@@ -20,6 +20,6 @@ router.get("/category", getProductsByCategory);
 
 router.get("/allCollection", getAllCollections);
 
-// router.get("/blogs", getAllBlogs);
+router.get("/product-by-title", getProductByTitle);
 
 export default router;

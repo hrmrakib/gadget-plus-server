@@ -110,3 +110,14 @@ export const getProductsByCategory = async (req, res) => {
     res.status(500).json({ error: "Error fetching products" });
   }
 };
+
+// get product by title
+export const getProductByTitle = async (req, res) => {
+  const { title } = req.query;
+  try {
+    const product = await productsCollection.findOne({ title });
+    res.status(200).json(product);
+  } catch (err) {
+    res.status(500).json({ error: "Error fetching product" });
+  }
+};
