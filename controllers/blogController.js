@@ -9,4 +9,14 @@ export const getBlogs = async (req, res) => {
   }
 };
 
-export const blogController = { getBlogs };
+export const getBlog = async (req, res) => {
+  const { id } = req.query;
+  try {
+    const result = await blogCollection.findOne({ _id: new ObjectId(id) });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching blog" });
+  }
+};
+
+export const blogController = { getBlogs, getBlog };
