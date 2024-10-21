@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { blogCollection } from "../config/db.js";
 
 export const getBlogs = async (req, res) => {
